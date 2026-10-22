@@ -14,7 +14,11 @@ Investigación y desarrollo de un bot de trading que rota el capital entre dos c
 4. **Controles de protección para apalancar más (BTC y ETH):** informe [`docs/proteccion_apalancamiento.md`](docs/proteccion_apalancamiento.md).
    - Stop intradía, volatilidad rápida y freno por caída reducen caídas pero no permiten ganar más apalancando; 1x sigue siendo lo mejor entre lo fijado de antemano.
    - Única candidata: "tendencia fuerte + freno con reinicio anual" a 2x (40 % anual frente a 34 %, caída similar), elegida a posteriori y justo en el límite de riesgo.
-5. **Siguiente fase propuesta:** motor del bot (estrategia A, solo BTC y ETH, 1x) y paper trading en OKX Europa, con la candidata a 2x en paralelo solo en demo.
+5. **Estrategia intradía a 10x con stop escalonado (stop según volatilidad → breakeven → objetivo): descartada.** Informe: [`docs/intradia_10x.md`](docs/intradia_10x.md).
+   - Protocolo pre-registrado con 96 configuraciones (15 min y 1 h) y entradas al azar como control: suspende los 5 criterios.
+   - Sin ventaja antes de costes; los costes se comen hasta el 39 % del riesgo de cada operación en velas de 15 min. El breakeven no mejora la rentabilidad.
+   - A 10x la cuenta pierde el 90 % en 11 meses; en el examen 2024–2026 pierden las 96 configuraciones.
+6. **Siguiente fase propuesta:** motor del bot (estrategia A, solo BTC y ETH, 1x) y paper trading en OKX Europa, con la candidata a 2x en paralelo solo en demo.
 
 ## Estructura
 
@@ -27,6 +31,7 @@ corrbot/            librería
   dips.py           estrategia B: compras tras caídas extremas (órdenes límite, funding)
   leverage.py       simulador con apalancamiento: funding, liquidación y rebalanceo
   protect.py        controles de protección: volatilidad rápida, stop intradía, freno por caída, tendencia fuerte
+  intraday.py       operaciones intradía con stop escalonado sobre velas de 5 min, cuenta apalancada
   plots.py          estilo de gráficos
 scripts/
   download_data.py  descarga el dataset (~200 MB en data/, ignorado por git)
@@ -41,6 +46,8 @@ scripts/
   charts_top10_leverage.py  gráficos 09-11
   protection_analysis.py    controles de protección y apalancamiento máximo aceptable → results/proteccion/
   charts_protection.py      gráficos 12-13
+  intraday_analysis.py      estrategia intradía 10x con stop escalonado (protocolo pre-registrado) → results/intradia/
+  charts_intraday.py        gráficos 14-17
 tests/              tests del backtester (incluye comprobación de "no mirar al futuro")
 results/            resultados en CSV (los números del informe)
 docs/               informe y gráficos
