@@ -1,7 +1,7 @@
 """Estrategia intradía con stop-loss escalonado (protocolo en docs/intradia_10x.md).
 
-Señales en velas de 15 min o 1 h (con el filtro de tendencia diaria de la estrategia A) y
-gestión de cada operación sobre velas de 5 min:
+Señales en velas de 1 min a 1 h (con el filtro de tendencia diaria de la estrategia A) y
+gestión de cada operación sobre velas más finas (5 min o 1 min, parámetro `bar`):
   1) stop inicial a k × ATR,
   2) breakeven (+costes) al avanzar m × la distancia del stop,
   3) objetivo a 3 × distancia o stop que persigue al mejor cierre,
@@ -34,9 +34,9 @@ class Mgmt:
     tp_r: float = 3.0              # objetivo en múltiplos de la distancia del stop
     max_hours: float = 24.0
 
-    @property
-    def max_bars(self) -> int:
-        return int(round(self.max_hours * 12))
+    def max_bars(self, bar: pd.Timedelta) -> int:
+        """Velas de gestión que caben en el cierre por tiempo."""
+        return int(round(self.max_hours * 3600 / bar.total_seconds()))
 
 
 @dataclass(frozen=True)
@@ -116,9 +116,9 @@ def _ohlc_arrays(bars: pd.DataFrame):
 
 
 def _frame(index5: pd.DatetimeIndex, e, i, d, entry, exit_px, code, exit_cost, w_fill, w_wick, dist_rel,
-           costs: TradeCosts, funding: pd.Series | None) -> pd.DataFrame:
+           costs: TradeCosts, funding: pd.Series | None, bar: pd.Timedelta = FIVE_MIN) -> pd.DataFrame:
     t_in = index5[e]
-    t_out = index5[i] + FIVE_MIN
+    t_out = index5[i] + bar
     gross = d * (exit_px / entry - 1)
     fund = np.zeros(len(e))
     if funding is not None and len(e):
@@ -140,10 +140,11 @@ def _frame(index5: pd.DatetimeIndex, e, i, d, entry, exit_px, code, exit_cost, w
 
 def simulate_trades_loop(bars: pd.DataFrame, ohlc: pd.DataFrame, sig: np.ndarray, atr_tf: pd.Series,
                          tf: pd.Timedelta, mgmt: Mgmt, costs: TradeCosts = TradeCosts(),
-                         funding: pd.Series | None = None) -> pd.DataFrame:
+                         funding: pd.Series | None = None, bar: pd.Timedelta = FIVE_MIN) -> pd.DataFrame:
     """Versión de referencia, explícita y lenta, de `simulate_trades` (se usa en los tests)."""
     o, h, lo, c = _ohlc_arrays(bars)
     n5 = len(o)
+    max_bars = mgmt.max_bars(bar)
     rows = []
     busy_until = -1
     for e, d, atr_j in zip(*_entries(bars, ohlc, sig, atr_tf, tf)):
@@ -159,7 +160,7 @@ def simulate_trades_loop(bars: pd.DataFrame, ohlc: pd.DataFrame, sig: np.ndarray
         armed = trailing = False
         best, worst = entry, 0.0
         exit_px, code, exit_cost = None, -1, costs.taker + costs.slip
-        last = min(e + mgmt.max_bars - 1, n5 - 1)
+        last = min(e + max_bars - 1, n5 - 1)
         for i in range(e, last + 1):
             adverse = (lo[i] / entry - 1) if d == 1 else (1 - h[i] / entry)
             if (lo[i] <= stop) if d == 1 else (h[i] >= stop):
@@ -196,10 +197,10 @@ def simulate_trades_loop(bars: pd.DataFrame, ohlc: pd.DataFrame, sig: np.ndarray
     e, i, d = (x.astype(np.int64) for x in arr[:3])
     code = arr[5].astype(np.int64)
     return _frame(bars.index, e, i, d, *(x.astype(float) for x in arr[3:5]), code,
-                  *(x.astype(float) for x in arr[6:]), costs=costs, funding=funding)
+                  *(x.astype(float) for x in arr[6:]), costs=costs, funding=funding, bar=bar)
 
 
-def _simulate_all(o, h, lo, c, e, d, atr_j, mgmt: Mgmt, costs: TradeCosts):
+def _simulate_all(o, h, lo, c, e, d, atr_j, mgmt: Mgmt, costs: TradeCosts, max_bars: int):
     """Simula cada candidata como si fuera la única, todas a la vez, avanzando vela a vela."""
     n5, M = len(o), len(e)
     lg = d == 1
@@ -222,7 +223,7 @@ def _simulate_all(o, h, lo, c, e, d, atr_j, mgmt: Mgmt, costs: TradeCosts):
     exit_cost = np.full(M, costs.taker + costs.slip)
     w_fill = np.zeros(M)
     w_wick = np.zeros(M)
-    last = np.minimum(e + mgmt.max_bars - 1, n5 - 1)
+    last = np.minimum(e + max_bars - 1, n5 - 1)
     act = np.arange(M)
     step = 0
     while len(act):
@@ -296,14 +297,15 @@ def _one_at_a_time(e: np.ndarray, exit_i: np.ndarray) -> np.ndarray:
 
 def simulate_trades(bars: pd.DataFrame, ohlc: pd.DataFrame, sig: np.ndarray, atr_tf: pd.Series,
                     tf: pd.Timedelta, mgmt: Mgmt, costs: TradeCosts = TradeCosts(),
-                    funding: pd.Series | None = None) -> pd.DataFrame:
-    """Simula las operaciones (sin apalancar) sobre velas de 5 minutos."""
+                    funding: pd.Series | None = None, bar: pd.Timedelta = FIVE_MIN) -> pd.DataFrame:
+    """Simula las operaciones (sin apalancar) sobre las velas de gestión `bars` (de duración `bar`)."""
     o, h, lo, c = _ohlc_arrays(bars)
     e, d, atr_j = _entries(bars, ohlc, sig, atr_tf, tf)
-    exit_i, exit_px, code, exit_cost, w_fill, w_wick, dist_rel = _simulate_all(o, h, lo, c, e, d, atr_j, mgmt, costs)
+    exit_i, exit_px, code, exit_cost, w_fill, w_wick, dist_rel = _simulate_all(
+        o, h, lo, c, e, d, atr_j, mgmt, costs, mgmt.max_bars(bar))
     k = _one_at_a_time(e, exit_i)
     return _frame(bars.index, e[k], exit_i[k], d[k], o[e[k]], exit_px[k], code[k], exit_cost[k],
-                  w_fill[k], w_wick[k], dist_rel[k], costs, funding)
+                  w_fill[k], w_wick[k], dist_rel[k], costs, funding, bar)
 
 
 # -------------------------------------------------------- cuenta apalancada

@@ -7,11 +7,19 @@
 4) Informativo, después del veredicto: breakeven, largos/cortos, BTC/ETH, años, barrido de
    apalancamiento, riesgo fijo por operación y las 96 configuraciones en el examen.
 
-Uso: python scripts/intraday_analysis.py   (~10 minutos)
+Uso:
+  python scripts/intraday_analysis.py                     # protocolo original: velas de 5 min, señales 15m y 1h
+  python scripts/intraday_analysis.py --velas 1m --temporalidades 15m,1h --sin-azar \
+         --salida results/intradia_gestion_1min           # ampliación A: misma rejilla gestionada con velas de 1 min
+  python scripts/intraday_analysis.py --velas 1m --temporalidades 1m,5m \
+         --salida results/intradia_1min                   # ampliación B: señales en velas de 1 y 5 min
+Opción --procesos N para repartir el trabajo entre varios núcleos (mismo resultado).
 """
 from __future__ import annotations
 
+import argparse
 import json
+import multiprocessing
 import sys
 import time
 from pathlib import Path
@@ -39,7 +47,13 @@ EXAM_MONTHS = months_between("2024-01", "2026-10")
 ALL_MONTHS = months_between("2018-06", "2026-10")
 DEV_YEARS = (EXAM - START).days / 365.25
 EXAM_YEARS = (END - EXAM).days / 365.25
-TFS = {"15m": "15min", "1h": "1h"}
+RULES = {"1m": "1min", "5m": "5min", "15m": "15min", "1h": "1h"}
+TFS = {"15m": "15min", "1h": "1h"}     # temporalidades de señal (se cambian con --temporalidades)
+BAR_INTERVAL = "5m"                    # velas de gestión (se cambian con --velas)
+BAR = pd.Timedelta(minutes=5)
+WITH_RANDOM = True
+PROCS = 1
+_DATA: dict | None = None              # datos compartidos con los procesos hijos
 ENTRIES = {"breakout": "ruptura", "pullback": "retroceso"}
 KS = [1.0, 2.0, 3.0]
 BES = [0.5, 1.0, 2.0, None]            # orden de "vecinas": sin breakeven = breakeven en el infinito
@@ -85,7 +99,7 @@ def funding_full(symbol: str) -> pd.Series:
 def prepare() -> dict:
     data = {}
     for asset, sym in ASSETS.items():
-        bars = load_klines(sym, "5m")[["open", "high", "low", "close"]]
+        bars = load_klines(sym, BAR_INTERVAL)[["open", "high", "low", "close"]]
         bars = bars[(bars.index >= WARMUP) & (bars.index < END)]
         expo = trend_exposure(load_klines(sym, "1d")["close"])
         per_tf = {}
@@ -113,7 +127,8 @@ def run(data: dict, tf: str, kind: str, m: Mgmt, start, end, seed: int = 0) -> d
         else:
             sig = t["sig"][kind]
         sig = np.where((t["close_t"] >= start) & (t["close_t"] < end), sig, 0)
-        tr = simulate_trades(d["bars"], t["ohlc"], sig, t["atr"], pd.Timedelta(TFS[tf]), m, COSTS, d["funding"])
+        tr = simulate_trades(d["bars"], t["ohlc"], sig, t["atr"], pd.Timedelta(TFS[tf]), m, COSTS, d["funding"],
+                             bar=BAR)
         tr["activo"] = asset
         out[asset] = tr
     return out
@@ -166,32 +181,45 @@ def leverage_row(dev_tr: dict, exam_tr: dict, L: float, risk: float | None = Non
 
 
 # --------------------------------------------------------------- desarrollo
-def development(data: dict) -> tuple[pd.DataFrame, dict]:
-    rows, trades = [], {}
-    for tf, kind, m in all_configs():
-        tr = run(data, tf, kind, m, START, EXAM)
-        name = config_name(tf, kind, m)
-        trades[name] = tr
-        rows.append({"config": name, "temporalidad": tf, "entrada": ENTRIES[kind], "k": m.k,
-                     "breakeven": be_label(m.be), "be_paso": BES.index(m.be), "salida": EXITS[m.exit],
-                     **stats(tr, DEV_YEARS)})
-    return pd.DataFrame(rows), trades
+def pmap(fn, tasks: list) -> list:
+    """Aplica fn a cada tarea, en paralelo si --procesos > 1 (el orden se conserva)."""
+    if PROCS <= 1:
+        return [fn(t) for t in tasks]
+    with multiprocessing.get_context("fork").Pool(PROCS) as pool:
+        return pool.map(fn, tasks, chunksize=1)
 
 
-def random_null(data: dict) -> pd.DataFrame:
-    rows = []
-    for tf in TFS:
-        for k in KS:
-            for be in BES:
-                for ex in EXITS:
-                    m = Mgmt(k=k, be=be, exit=ex)
-                    for seed in range(SEEDS):
-                        tr = pooled(run(data, tf, "random", m, START, EXAM, seed=seed))
-                        rows.append({"temporalidad": tf, "k": k, "breakeven": be_label(be), "salida": EXITS[ex],
-                                     "semilla": seed, "operaciones": len(tr), "media_neta": tr["neto"].mean(),
-                                     "media_bruta": tr["bruto"].mean(),
-                                     "media_neta_R": (tr["neto"] / tr["distancia_stop"]).mean()})
-    return pd.DataFrame(rows)
+def _dev_task(cfg) -> dict:
+    tf, kind, m = cfg
+    tr = run(_DATA, tf, kind, m, START, EXAM)
+    return {"config": config_name(tf, kind, m), "temporalidad": tf, "entrada": ENTRIES[kind], "k": m.k,
+            "breakeven": be_label(m.be), "be_paso": BES.index(m.be), "salida": EXITS[m.exit],
+            **stats(tr, DEV_YEARS)}
+
+
+def _random_task(task) -> dict:
+    tf, m, seed = task
+    tr = pooled(run(_DATA, tf, "random", m, START, EXAM, seed=seed))
+    return {"temporalidad": tf, "k": m.k, "breakeven": be_label(m.be), "salida": EXITS[m.exit],
+            "semilla": seed, "operaciones": len(tr), "media_neta": tr["neto"].mean(),
+            "media_bruta": tr["bruto"].mean(), "media_neta_R": (tr["neto"] / tr["distancia_stop"]).mean()}
+
+
+def _exam_task(cfg) -> dict:
+    tf, kind, m = cfg
+    s = stats(run(_DATA, tf, kind, m, EXAM, END), EXAM_YEARS)
+    return {"config": config_name(tf, kind, m), "examen_operaciones": s["operaciones"],
+            "examen_media_neta": s["media_neta"], "examen_media_bruta": s["media_bruta"], "examen_t": s["t"]}
+
+
+def development() -> pd.DataFrame:
+    return pd.DataFrame(pmap(_dev_task, list(all_configs())))
+
+
+def random_null() -> pd.DataFrame:
+    tasks = [(tf, Mgmt(k=k, be=be, exit=ex), seed) for tf in TFS for k in KS for be in BES for ex in EXITS
+             for seed in range(SEEDS)]
+    return pd.DataFrame(pmap(_random_task, tasks))
 
 
 def neighbours(grid: pd.DataFrame, row: pd.Series) -> tuple[float, int]:
@@ -205,26 +233,49 @@ def neighbours(grid: pd.DataFrame, row: pd.Series) -> tuple[float, int]:
     return float((nb["media_neta"] > 0).mean()), len(nb)
 
 
+def parse_args() -> None:
+    global TFS, BAR_INTERVAL, BAR, OUT, WITH_RANDOM, PROCS
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--velas", choices=["5m", "1m"], default="5m", help="velas con las que se gestiona cada operación")
+    ap.add_argument("--temporalidades", default="15m,1h", help="temporalidades de señal, separadas por comas")
+    ap.add_argument("--salida", default=str(OUT.relative_to(ROOT)), help="carpeta de resultados")
+    ap.add_argument("--sin-azar", action="store_true", help="no simular las entradas al azar (criterio 2 sin evaluar)")
+    ap.add_argument("--procesos", type=int, default=1)
+    args = ap.parse_args()
+    TFS = {tf: RULES[tf] for tf in args.temporalidades.split(",")}
+    BAR_INTERVAL, BAR = args.velas, pd.Timedelta(RULES[args.velas])
+    OUT = ROOT / args.salida
+    WITH_RANDOM = not args.sin_azar
+    PROCS = args.procesos
+
+
 def main() -> None:
+    global _DATA
+    parse_args()
     t0 = time.time()
     OUT.mkdir(parents=True, exist_ok=True)
-    data = prepare()
+    data = _DATA = prepare()
+    print(f"velas de gestión {BAR_INTERVAL}, señales {list(TFS)}, salida {OUT}", flush=True)
     for asset, d in data.items():
         print(asset, {tf: round(v["p"], 4) for tf, v in d["tf"].items()}, "prob. de entrada al azar", flush=True)
 
     # 1) Desarrollo ------------------------------------------------------------
-    grid, dev_trades = development(data)
+    grid = development()
     print(f"rejilla de desarrollo: {len(grid)} configuraciones ({time.time() - t0:.0f}s)", flush=True)
-    rand = random_null(data)
-    rand.to_csv(OUT / "azar_desarrollo.csv", index=False)
-    print(f"entradas al azar: {len(rand)} simulaciones ({time.time() - t0:.0f}s)", flush=True)
-    keys = ["temporalidad", "k", "breakeven", "salida"]
-    g = rand.groupby(keys)["media_neta"]
-    ref = pd.DataFrame({"azar_mediana": g.median(), "azar_p95": g.quantile(0.95), "azar_max": g.max()}).reset_index()
-    grid = grid.merge(ref, on=keys, how="left")
-    grid["fraccion_azar_por_debajo"] = [
-        float((rand.loc[(rand[keys] == r[keys].to_numpy()).all(axis=1), "media_neta"] < r["media_neta"]).mean())
-        for _, r in grid.iterrows()]
+    if WITH_RANDOM:
+        rand = random_null()
+        rand.to_csv(OUT / "azar_desarrollo.csv", index=False)
+        print(f"entradas al azar: {len(rand)} simulaciones ({time.time() - t0:.0f}s)", flush=True)
+        keys = ["temporalidad", "k", "breakeven", "salida"]
+        g = rand.groupby(keys)["media_neta"]
+        ref = pd.DataFrame({"azar_mediana": g.median(), "azar_p95": g.quantile(0.95),
+                            "azar_max": g.max()}).reset_index()
+        grid = grid.merge(ref, on=keys, how="left")
+        grid["fraccion_azar_por_debajo"] = [
+            float((rand.loc[(rand[keys] == r[keys].to_numpy()).all(axis=1), "media_neta"] < r["media_neta"]).mean())
+            for _, r in grid.iterrows()]
+    else:
+        grid["azar_p95"] = np.nan
     nb = [neighbours(grid, r) for _, r in grid.iterrows()]
     grid["vecinas_positivas"] = [f for f, _ in nb]
     grid["n_vecinas"] = [n for _, n in nb]
@@ -240,12 +291,15 @@ def main() -> None:
 
     crit = {
         "1_desarrollo_positiva_t>=2": bool(sel["media_neta"] > 0 and sel["t"] >= 2),
-        "2_mejor_que_azar_p95": bool(sel["media_neta"] > sel["azar_p95"]),
+        "2_mejor_que_azar_p95": bool(sel["media_neta"] > sel["azar_p95"]) if WITH_RANDOM else None,
         "3_vecinas_positivas>=50%": bool(sel["vecinas_positivas"] >= 0.5),
     }
 
     # 3) Examen, una sola vez con la configuración congelada ------------------
-    dev_tr = dev_trades[sel["config"]]
+    # (las operaciones de desarrollo de la elegida y de sus variantes de breakeven se recalculan:
+    #  la simulación es determinista)
+    dev_family = {be: run(data, tf, kind, Mgmt(k=m.k, be=be, exit=m.exit), START, EXAM) for be in BES}
+    dev_tr = dev_family[m.be]
     exam_tr = run(data, tf, kind, m, EXAM, END)
     exam_stats = stats(exam_tr, EXAM_YEARS)
     crit["4_examen_positiva"] = bool(exam_stats["media_neta"] > 0)
@@ -255,7 +309,7 @@ def main() -> None:
     verdict = {
         "seleccionada": sel["config"],
         "criterios": crit,
-        "aprobada": all(crit.values()),
+        "aprobada": all(v for v in crit.values() if v is not None),
         "apalancamiento_max_que_cumple_riesgo": float(passing.max()) if len(passing) else 0.0,
         "desarrollo": {k: (float(v) if isinstance(v, (int, float, np.floating, np.integer)) else v)
                        for k, v in sel.items()},
@@ -272,9 +326,8 @@ def main() -> None:
     rows = []
     for be in BES:
         mb = Mgmt(k=m.k, be=be, exit=m.exit)
-        name = config_name(tf, kind, mb)
         ex_tr = exam_tr if be == m.be else run(data, tf, kind, mb, EXAM, END)
-        for period, tr, years in [("desarrollo", dev_trades[name], DEV_YEARS), ("examen", ex_tr, EXAM_YEARS)]:
+        for period, tr, years in [("desarrollo", dev_family[be], DEV_YEARS), ("examen", ex_tr, EXAM_YEARS)]:
             rows.append({"breakeven": be_label(be), "periodo": period, **stats(tr, years)})
     pd.DataFrame(rows).to_csv(OUT / "efecto_breakeven.csv", index=False)
 
@@ -309,13 +362,7 @@ def main() -> None:
     pd.DataFrame(curves).to_csv(OUT / "curvas.csv")
 
     # Las 96 configuraciones en el examen (solo informativo: no cambia la selección)
-    rows = []
-    for tf_, kind_, m_ in all_configs():
-        name = config_name(tf_, kind_, m_)
-        tr = exam_tr if name == sel["config"] else run(data, tf_, kind_, m_, EXAM, END)
-        s = stats(tr, EXAM_YEARS)
-        rows.append({"config": name, "examen_operaciones": s["operaciones"], "examen_media_neta": s["media_neta"],
-                     "examen_media_bruta": s["media_bruta"], "examen_t": s["t"]})
+    rows = pmap(_exam_task, list(all_configs()))
     exam_grid = grid[["config", "temporalidad", "entrada", "k", "breakeven", "salida", "operaciones", "media_neta",
                       "media_bruta"]].merge(pd.DataFrame(rows), on="config")
     exam_grid.to_csv(OUT / "examen_rejilla.csv", index=False)

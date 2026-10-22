@@ -103,9 +103,9 @@ def test_funding_sign(sim):
     assert long_["neto"] == pytest.approx(-long_["costes"] - 0.001)
 
 
-def _synthetic(n=12_000, seed=1):
+def _synthetic(n=12_000, seed=1, freq="5min"):
     rng = np.random.default_rng(seed)
-    t5 = pd.date_range("2023-01-01", periods=n, freq="5min", tz="UTC")
+    t5 = pd.date_range("2023-01-01", periods=n, freq=freq, tz="UTC")
     close = 100 * np.exp(np.cumsum(rng.normal(0, 0.003, n)))
     opens = np.concatenate([[100.0], close[:-1]])
     wick = np.abs(rng.normal(0, 0.002, (2, n)))
@@ -199,3 +199,35 @@ def test_bootstrap_year_constant_months():
     assert ((out["multiplicador"] > 0.99) & (out["multiplicador"] < 1.1 ** 12 + 1e-9)).all()
     assert (out["caida"] <= 0).all() and (out["caida"] >= -0.1 - 1e-12).all()
     assert out["liquidaciones"].max() <= 12
+
+
+@pytest.mark.parametrize("tf", ["1min", "5min"])
+def test_fast_simulator_matches_reference_on_1m_bars(tf):
+    bars, fund = _synthetic(n=20_000, seed=5, freq="1min")
+    ohlc = resample_ohlc(bars, tf)
+    a = atr(ohlc)
+    allowed = np.where((np.arange(len(ohlc)) // 300) % 2 == 0, 1, -1)
+    sig = signals(ohlc, "random", allowed, p=0.05, seed=7)
+    one = pd.Timedelta(minutes=1)
+    n_total = 0
+    for k in (1.0, 3.0):
+        for be in (0.5, None):
+            for ex in ("tp", "trail"):
+                m = Mgmt(k=k, be=be, exit=ex)
+                fast = simulate_trades(bars, ohlc, sig, a, pd.Timedelta(tf), m, COSTS, fund, bar=one)
+                ref = simulate_trades_loop(bars, ohlc, sig, a, pd.Timedelta(tf), m, COSTS, fund, bar=one)
+                pd.testing.assert_frame_equal(fast, ref)
+                n_total += len(fast)
+    assert n_total > 500
+
+
+def test_time_exit_after_24h_with_1m_bars():
+    one = pd.Timedelta(minutes=1)
+    t1 = pd.date_range("2024-01-01 00:01", periods=1500, freq="1min", tz="UTC")
+    bars = pd.DataFrame({"open": 100.0, "high": 100.05, "low": 99.95, "close": 100.0}, index=t1)
+    ohlc = pd.DataFrame({"close": [100.0]}, index=pd.DatetimeIndex([pd.Timestamp("2024-01-01 00:00", tz="UTC")]))
+    tr = simulate_trades(bars, ohlc, np.array([1]), pd.Series([1.0], index=ohlc.index), one,
+                         Mgmt(k=1.0, be=None), COSTS, bar=one)
+    t = tr.iloc[0]
+    assert t["entrada"] == pd.Timestamp("2024-01-01 00:01", tz="UTC")
+    assert t["motivo"] == "tiempo" and t["salida"] - t["entrada"] == pd.Timedelta(hours=24)
