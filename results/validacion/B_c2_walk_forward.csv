@@ -1,0 +1,6 @@
+año,elegida,operaciones,neto_total
+2020,"4h, k=2.0, salida 2h, filtro no",488,-0.1446
+2021,"4h, k=2.5, salida 4h, filtro sí",170,0.9500
+2022,"1h, k=3.0, salida 8h, filtro no",272,-1.4435
+2023,"4h, k=3.0, salida 4h, filtro no",103,0.0218
+2024,"4h, k=3.0, salida 4h, filtro no",139,0.5765

@@ -4,9 +4,11 @@ Investigación y desarrollo de un bot de trading que rota el capital entre dos c
 
 ## Estado
 
-**Fase 0 (validación inicial con datos): completada.** Informe completo: [`docs/analisis_inicial.md`](docs/analisis_inicial.md).
-
-Conclusión resumida: la regla original ("tras una subida → BTC, tras una bajada → ETH") **no tiene ventaja estadística y pierde frente a mantener BTC** en 34 de las 35 variantes probadas (2018–2026, con comisiones). El informe explica por qué, qué variantes sí tienen recorrido y propone una hoja de ruta por fases.
+1. **Idea original (rotación BTC↔ETH): descartada.** No tiene ventaja estadística y pierde frente a mantener BTC en 34 de las 35 variantes probadas. Informe: [`docs/analisis_inicial.md`](docs/analisis_inicial.md).
+2. **Nueva base A + B: validación completa hecha** con protocolo pre-registrado. Informe: [`docs/validacion_A_B.md`](docs/validacion_A_B.md).
+   - **A (seguir la tendencia en BTC/ETH con salida a USDT):** aprueba 5 de 6 criterios, incluido el examen final 2025–2026 (+25,5 % frente a −18 % de mantener; caída máxima −21 % frente a −60 %). Suspende la generalización del Sharpe a altcoins.
+   - **B (comprar caídas bruscas):** descartada.
+   - Siguiente fase propuesta: motor del bot y paper trading en OKX Europa.
 
 ## Estructura
 
@@ -15,11 +17,16 @@ corrbot/            librería
   data.py           descarga y caché de velas de Binance (data.binance.vision, sin API key)
   stats.py          beta, beta asimétrica, ratio de varianzas, zigzag (tramos), cointegración
   backtest.py       backtester de rotación 0/1 y de rebalanceo, métricas, test de azar, walk-forward
+  trend.py          estrategia A: tendencia con tamaño por volatilidad, backtest, test de azar, simulación de caídas
+  dips.py           estrategia B: compras tras caídas extremas (órdenes límite, funding)
   plots.py          estilo de gráficos
 scripts/
   download_data.py  descarga el dataset (~200 MB en data/, ignorado por git)
   explore.py        fase 1: ¿se cumplen las premisas? → results/*.csv, docs/img/01-04
   backtest_rotation.py  backtests con costes → results/bt_*.csv, docs/img/05-06
+  validate_a.py     validación de A (tendencia) en desarrollo → results/validacion/A_*.csv
+  validate_b.py     validación de B (caídas) en desarrollo → results/validacion/B_*.csv
+  final_exam.py     examen final 2025-2026 → results/validacion/examen_*.csv, docs/img/07-08
 tests/              tests del backtester (incluye comprobación de "no mirar al futuro")
 results/            resultados en CSV (los números del informe)
 docs/               informe y gráficos

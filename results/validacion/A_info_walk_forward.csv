@@ -1,0 +1,9 @@
+token,año,elegida,rent_elegida,rent_conjunto_a_priori,rent_HODL
+BTC,2021,"media 30, vol 0.3",0.1962,0.1600,0.5979
+BTC,2022,"media 50, vol 0.3",-0.3278,-0.1975,-0.6421
+BTC,2023,"media 50, vol sin",1.3809,0.7982,1.5561
+BTC,2024,"media 50, vol sin",0.7578,0.7063,1.2131
+ETH,2021,"media 20, vol 0.6",1.1235,0.9185,3.9920
+ETH,2022,"media 75, vol 0.3",-0.2127,-0.2055,-0.6746
+ETH,2023,"media 30, vol 0.4",0.1593,0.4229,0.9077
+ETH,2024,"media 200, vol 0.6",0.5117,0.3266,0.4627

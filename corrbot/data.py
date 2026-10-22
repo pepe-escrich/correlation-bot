@@ -146,3 +146,49 @@ def load_closes(symbols: list[str], interval: str = "1h", start: str | None = No
     # El índice es la hora de APERTURA de cada vela (el cierre llega un intervalo después).
     # Se rellenan huecos cortos (paradas de mantenimiento del exchange).
     return closes.reindex(grid).ffill(limit=12)
+
+
+# ------------------------------------------------------------------ funding rates
+FUNDING_URL = "https://data.binance.vision/data/futures/um/monthly/fundingRate"
+
+
+def _fetch_funding(url: str) -> pd.Series | None:
+    raw = _fetch_raw_csv(url)
+    if raw is None:
+        return None
+    raw = raw[pd.to_numeric(raw[0], errors="coerce").notna()]
+    ts = raw[0].astype("int64").to_numpy()
+    ts = np.where(ts > 10**14, ts // 1000, ts)
+    return pd.Series(raw[raw.columns[-1]].astype(float).to_numpy(), index=pd.to_datetime(ts, unit="ms", utc=True))
+
+
+def _fetch_raw_csv(url: str, retries: int = 5) -> pd.DataFrame | None:
+    for attempt in range(retries):
+        try:
+            resp = _session().get(url, timeout=60)
+        except requests.RequestException:
+            time.sleep(2 ** attempt)
+            continue
+        if resp.status_code == 404:
+            return None
+        if resp.status_code == 200:
+            with zipfile.ZipFile(io.BytesIO(resp.content)) as zf:
+                with zf.open(zf.namelist()[0]) as fh:
+                    return pd.read_csv(fh, header=None, dtype=str)
+        time.sleep(2 ** attempt)
+    raise RuntimeError(f"No se pudo descargar {url}")
+
+
+def download_funding(symbol: str, start: str = "2019-09-01", workers: int = 16) -> pd.Series:
+    """Funding rates de los perpetuos USDT-M de Binance (cada 8 h) → data/funding/<SIMBOLO>.parquet."""
+    today = datetime.now(timezone.utc).date()
+    months = _month_starts(date.fromisoformat(start), date(today.year, today.month, 1) - timedelta(days=1))
+    urls = [f"{FUNDING_URL}/{symbol}/{symbol}-fundingRate-{m:%Y-%m}.zip" for m in months]
+    with ThreadPoolExecutor(max_workers=workers) as pool:
+        parts = [p for p in pool.map(_fetch_funding, urls) if p is not None]
+    series = pd.concat(parts).sort_index()
+    series = series[~series.index.duplicated()]
+    path = DATA_DIR.parent / "funding" / f"{symbol}.parquet"
+    path.parent.mkdir(parents=True, exist_ok=True)
+    series.to_frame("rate").to_parquet(path)
+    return series

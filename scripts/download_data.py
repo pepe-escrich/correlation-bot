@@ -13,7 +13,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
-from corrbot.data import download_klines  # noqa: E402
+from corrbot.data import download_funding, download_klines  # noqa: E402
 
 # Tokens líquidos con historia larga en Binance (par USDT activo).
 UNIVERSE = [
@@ -28,11 +28,15 @@ JOBS = {
     "1h": [f"{t}USDT" for t in UNIVERSE] + CROSS_PAIRS,
     "5m": ["BTCUSDT", "ETHUSDT", "ETHBTC"],
 }
+# Velas de 5 min de otros tokens para validar la estrategia B (desde 2019).
+EXTRA_5M = ["SOLUSDT", "BNBUSDT", "XRPUSDT", "DOGEUSDT", "ADAUSDT", "LINKUSDT"]
+# Funding de los perpetuos (coste de la estrategia B).
+FUNDING = ["BTCUSDT", "ETHUSDT"] + EXTRA_5M
 
 
 def main() -> None:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--only", choices=sorted(JOBS), help="descargar solo este intervalo")
+    parser.add_argument("--only", choices=sorted(JOBS) + ["funding"], help="descargar solo este intervalo")
     parser.add_argument("--start", default="2017-08-01")
     args = parser.parse_args()
     for interval, symbols in JOBS.items():
@@ -44,6 +48,14 @@ def main() -> None:
             print(f"{interval:>3} {symbol:<9} {len(df):>8} velas  "
                   f"{df.index[0]:%Y-%m-%d} → {df.index[-1]:%Y-%m-%d}  ({time.time() - t0:.1f}s)",
                   flush=True)
+    if args.only in (None, "5m"):
+        for symbol in EXTRA_5M:
+            df = download_klines(symbol, "5m", start="2019-01-01")
+            print(f" 5m {symbol:<9} {len(df):>8} velas  {df.index[0]:%Y-%m-%d} → {df.index[-1]:%Y-%m-%d}", flush=True)
+    if args.only in (None, "funding"):
+        for symbol in FUNDING:
+            s = download_funding(symbol)
+            print(f"funding {symbol:<9} {len(s):>6} registros  {s.index[0]:%Y-%m-%d} → {s.index[-1]:%Y-%m-%d}", flush=True)
 
 
 if __name__ == "__main__":
