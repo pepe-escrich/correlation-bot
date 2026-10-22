@@ -1,0 +1,6 @@
+estrategia,multiplicador,CAGR,max_drawdown,sharpe,vs_hodl_a,cambios_por_año,tiempo_en_b
+HODL BTC,6.216,0.2306,-0.8142,0.6451,1,0,0
+HODL ETH,3.4,0.1491,-0.9426,0.5829,0.547,0,1
+50/50 sin rebalancear,4.808,0.1952,-0.8849,0.6035,0.7735,0,
+50/50 rebalanceo banda 5 %,6.454,0.2359,-0.8791,0.6527,1.038,7.269,
+50/50 rebalanceo banda 10 %,6.605,0.2391,-0.8759,0.6563,1.063,1.931,

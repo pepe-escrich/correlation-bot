@@ -1,0 +1,9 @@
+[project]
+name = "correlation-bot"
+version = "0.1.0"
+description = "Investigación de un bot de rotación entre criptomonedas correlacionadas"
+requires-python = ">=3.10"
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
+testpaths = ["tests"]

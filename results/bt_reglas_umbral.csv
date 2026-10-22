@@ -1,0 +1,55 @@
+familia,umbral,regla,bruto_vs_HODL_BTC,neto_vs_HODL_BTC,multiplicador_usd,max_drawdown_usd,cambios_por_año,tiempo_en_ETH
+tramos de BTC,0.01,idea (contraria),0.4913,0.0006671,0.004146,-0.9976,788.9,0.4659
+tramos de BTC,0.01,al revés (tendencia),1.101,0.001497,0.009303,-0.9956,788.8,0.5341
+tramos de BTC,0.02,idea (contraria),0.234,0.01394,0.08662,-0.9593,337.1,0.4673
+tramos de BTC,0.02,al revés (tendencia),2.312,0.1378,0.8565,-0.955,337,0.5327
+tramos de BTC,0.03,idea (contraria),0.555,0.1056,0.6562,-0.9301,198.3,0.4499
+tramos de BTC,0.03,al revés (tendencia),0.9679,0.184,1.143,-0.9218,198.4,0.55
+tramos de BTC,0.05,idea (contraria),1.225,0.5682,3.532,-0.8468,91.77,0.4343
+tramos de BTC,0.05,al revés (tendencia),0.4231,0.1965,1.221,-0.968,91.65,0.5655
+tramos de BTC,0.075,idea (contraria),0.4486,0.3052,1.897,-0.8974,46,0.4144
+tramos de BTC,0.075,al revés (tendencia),1.118,0.7603,4.726,-0.9009,46.11,0.5851
+tramos de BTC,0.1,idea (contraria),0.4378,0.3498,2.175,-0.9123,26.8,0.3673
+tramos de BTC,0.1,al revés (tendencia),1.146,0.9148,5.686,-0.9009,26.92,0.6321
+tramos de BTC,0.15,idea (contraria),0.222,0.1973,1.227,-0.9051,14.08,0.359
+tramos de BTC,0.15,al revés (tendencia),2.313,2.054,12.77,-0.893,14.2,0.6404
+tramos de BTC,0.2,idea (contraria),0.1159,0.108,0.6713,-0.9242,8.404,0.2919
+tramos de BTC,0.2,al revés (tendencia),4.065,3.785,23.53,-0.8645,8.518,0.7067
+tramos de BTC,0.3,idea (contraria),0.3239,0.3142,1.953,-0.9063,3.634,0.2299
+tramos de BTC,0.3,al revés (tendencia),1.66,1.609,10,-0.895,3.748,0.7685
+tramos del ratio,0.01,idea (contraria),0.2315,0.002137,0.01329,-0.993,559.8,0.5285
+tramos del ratio,0.01,al revés (tendencia),2.337,0.02156,0.134,-0.9618,559.9,0.4715
+tramos del ratio,0.02,idea (contraria),0.1005,0.01611,0.1001,-0.9627,218.7,0.5356
+tramos del ratio,0.02,al revés (tendencia),5.3,0.8489,5.276,-0.8988,218.9,0.4643
+tramos del ratio,0.03,idea (contraria),0.1576,0.0574,0.3568,-0.9266,120.7,0.539
+tramos del ratio,0.03,al revés (tendencia),3.367,1.225,7.614,-0.8918,120.8,0.4609
+tramos del ratio,0.05,idea (contraria),0.07545,0.04943,0.3072,-0.9667,50.54,0.4992
+tramos del ratio,0.05,al revés (tendencia),6.894,4.512,28.04,-0.8046,50.65,0.5007
+tramos del ratio,0.075,idea (contraria),0.3529,0.2753,1.711,-0.937,29.64,0.5433
+tramos del ratio,0.075,al revés (tendencia),1.327,1.035,6.431,-0.8402,29.76,0.4564
+tramos del ratio,0.1,idea (contraria),0.1499,0.1306,0.8117,-0.9485,16.47,0.5386
+tramos del ratio,0.1,al revés (tendencia),3.125,2.72,16.91,-0.8363,16.58,0.4611
+tramos del ratio,0.15,idea (contraria),0.1328,0.1248,0.7755,-0.9537,7.496,0.5572
+tramos del ratio,0.15,al revés (tendencia),3.525,3.308,20.56,-0.806,7.609,0.4424
+tramos del ratio,0.2,idea (contraria),0.2662,0.2553,1.587,-0.9462,4.997,0.5696
+tramos del ratio,0.2,al revés (tendencia),1.711,1.639,10.19,-0.7999,5.111,0.4293
+tramos del ratio,0.3,idea (contraria),0.5008,0.4905,3.049,-0.9078,2.499,0.3791
+tramos del ratio,0.3,al revés (tendencia),0.7879,0.7708,4.791,-0.8931,2.612,0.6187
+grid del ratio,0.01,idea (contraria),0.8282,0.7831,4.867,-0.9091,6.701,0.6464
+grid del ratio,0.01,al revés (tendencia),0.6478,0.6107,3.796,-0.8831,7.042,0.3533
+grid del ratio,0.02,idea (contraria),0.9547,0.9147,5.686,-0.9078,5.111,0.6295
+grid del ratio,0.02,al revés (tendencia),0.6966,0.6757,4.2,-0.887,3.634,0.3468
+grid del ratio,0.03,idea (contraria),0.9305,0.9035,5.616,-0.9078,3.521,0.6252
+grid del ratio,0.03,al revés (tendencia),0.7509,0.7382,4.589,-0.8811,2.044,0.3479
+grid del ratio,0.05,idea (contraria),0.7808,0.7727,4.803,-0.9046,1.249,0.5828
+grid del ratio,0.05,al revés (tendencia),0.5514,0.54,3.357,-0.8811,2.499,0.3759
+grid del ratio,0.075,idea (contraria),0.7525,0.7475,4.647,-0.9033,0.795,0.579
+grid del ratio,0.075,al revés (tendencia),0.4227,0.4147,2.578,-0.8848,2.271,0.3387
+grid del ratio,0.1,idea (contraria),0.8591,0.8534,5.304,-0.8993,0.795,0.567
+grid del ratio,0.1,al revés (tendencia),0.4546,0.4486,2.789,-0.8925,1.59,0.3426
+grid del ratio,0.15,idea (contraria),0.7949,0.7926,4.927,-0.8939,0.3407,0.5604
+grid del ratio,0.15,al revés (tendencia),0.4342,0.4301,2.673,-0.8828,1.136,0.4011
+grid del ratio,0.2,idea (contraria),0.8622,0.8597,5.344,-0.8872,0.3407,0.5491
+grid del ratio,0.2,al revés (tendencia),0.5096,0.5067,3.149,-0.8857,0.6814,0.4008
+grid del ratio,0.3,idea (contraria),1.118,1.114,6.927,-0.8722,0.3407,0.5202
+grid del ratio,0.3,al revés (tendencia),0.4852,0.4833,3.004,-0.8845,0.4543,0.3993

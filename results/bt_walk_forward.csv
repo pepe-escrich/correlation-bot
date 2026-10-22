@@ -1,0 +1,8 @@
+año,elegida,train_vs_a,test_vs_a,mejor_a_posteriori,mejor_test_vs_a
+2020,tramos ratio 5.0% (al revés),1.887,2.19,tramos ratio 5.0% (al revés),2.19
+2021,tramos ratio 5.0% (al revés),2.118,2.492,tramos BTC 20.0% (al revés),4.118
+2022,tramos BTC 20.0% (al revés),6.323,1.223,tramos BTC 20.0% (al revés),1.223
+2023,tramos BTC 20.0% (al revés),5.066,0.8279,tramos ratio 7.5% (idea),1.049
+2024,tramos ratio 7.5% (idea),1.236,0.7868,tramos ratio 15.0% (idea),1.109
+2025,HODL BTC,1,1,tramos ratio 15.0% (al revés),1.535
+2026,tramos ratio 30.0% (al revés),1.445,0.7787,tramos ratio 30.0% (idea),1.11

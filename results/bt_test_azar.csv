@@ -1,0 +1,5 @@
+estrategia,real_bruto_vs_BTC,azar_mediana,azar_p95,percentil_vs_azar
+Idea: tramos de BTC del 5 %,1.225,0.759,2.478,0.7415
+Al revés: tendencia del ratio 5 %,6.894,0.7315,2.718,0.9985
+Al revés: tendencia del ratio 10 %,3.125,0.7524,2.76,0.9605
+Al revés: tendencia del ratio 15 %,3.525,0.7335,2.823,0.9745

@@ -1,0 +1,7 @@
+# Datos descargados (se regeneran con scripts/download_data.py)
+data/
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+.ipynb_checkpoints/

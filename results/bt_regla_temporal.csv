@@ -1,0 +1,17 @@
+regla,temporalidad,bruto (sin costes),"0,05 % + spread (tipo Pionex)","0,075 % + spread (Binance+BNB)",vía USDT (2 operaciones),cambios_por_año,comisiones_por_año_%capital
+idea (tras subida -> BTC),5m,5.239e-06,2.572e-151,3.087e-203,1.976e-323,5.427e+04,5155
+al revés (tras subida -> ETH),5m,1.047e+05,5.142e-141,6.173e-193,4.447e-323,5.427e+04,5155
+idea (tras subida -> BTC),15m,0.01107,5.462e-52,1.317e-69,1.353e-136,1.841e+04,1749
+al revés (tras subida -> ETH),15m,49.54,2.447e-48,5.899e-66,6.066e-133,1.841e+04,1749
+idea (tras subida -> BTC),1h,0.9657,2.785e-13,9.205e-18,8.453e-35,4683,444.9
+al revés (tras subida -> ETH),1h,0.5602,1.616e-13,5.345e-18,4.913e-35,4683,444.9
+idea (tras subida -> BTC),4h,1.75,0.001153,8.413e-05,4.007e-09,1188,112.9
+al revés (tras subida -> ETH),4h,0.3034,0.0001997,1.457e-05,6.934e-10,1188,112.9
+idea (tras subida -> BTC),12h,2.104,0.2037,0.08846,0.003709,378.7,35.98
+al revés (tras subida -> ETH),12h,0.2478,0.02398,0.01041,0.0004361,378.8,35.99
+idea (tras subida -> BTC),1d,1.488,0.4437,0.288,0.05564,196.3,18.65
+al revés (tras subida -> ETH),1d,0.3392,0.1011,0.06558,0.01266,196.4,18.66
+idea (tras subida -> BTC),3d,0.3907,0.2644,0.2299,0.1352,63.43,6.026
+al revés (tras subida -> ETH),3d,1.28,0.8653,0.7523,0.442,63.55,6.037
+idea (tras subida -> BTC),1w,0.2795,0.2362,0.2225,0.1771,27.28,2.592
+al revés (tras subida -> ETH),1w,1.053,0.8907,0.839,0.6683,27.17,2.581
