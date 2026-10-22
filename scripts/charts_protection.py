@@ -22,7 +22,8 @@ def chart_max_leverage() -> None:
     y = np.arange(len(best))
     base = best.loc[best["variante"] == "Sin protección", "CAGR_hist"].iloc[0]
     fig, ax = plt.subplots(figsize=(11, 5.8))
-    colors = [plots.SERIES[0] if v == "Sin protección" else plots.MUTED for v in best["variante"]]
+    colors = [plots.SERIES[0] if v == "Sin protección" else (plots.SERIES[1] if "a posteriori" in v else plots.MUTED)
+              for v in best["variante"]]
     ax.barh(y, best["CAGR_hist"], height=0.55, color=colors)
     ax.axvline(base, color=plots.SERIES[0], linewidth=1)
     for yi, (lev, cagr, dd, p50) in enumerate(zip(best["apalanc_mejor_aceptable"], best["CAGR_hist"],
@@ -30,11 +31,11 @@ def chart_max_leverage() -> None:
         ax.text(cagr + 0.006, yi, f"{plots.num(lev, 1)}x · peor caída {plots.num(dd * 100, 0)} % · "
                                   f"prob. >50 %: {plots.num(p50 * 100, 0)} %", va="center", color=plots.INK_2, fontsize=8.8)
     ax.set_yticks(y, best["variante"])
-    ax.set_xlim(0, 0.62)
+    ax.set_xlim(0, 0.66)
     ax.grid(axis="y", visible=False)
     plots.es_axis(ax.xaxis, percent=True)
     ax.set_xlabel("rentabilidad anual compuesta (2018–2026) con el mejor apalancamiento que cumple tu límite")
-    ax.set_title("Ningún control consigue más rentabilidad que no apalancar, cumpliendo tu límite", pad=26)
+    ax.set_title("Solo una combinación elegida a posteriori rinde más que no apalancar, y justo en el límite", pad=26)
     plots.subtitle(ax, "Para cada control: el apalancamiento que más rinde sin pasar de −50 % (histórico), con ≤ 5 % "
                        "de probabilidad de superarlo en 3 años y ≤ 1 % de liquidación")
     plots.save(fig, "12_proteccion_apalancamiento_max.png")

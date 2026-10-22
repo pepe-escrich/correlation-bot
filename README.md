@@ -11,7 +11,10 @@ Investigación y desarrollo de un bot de trading que rota el capital entre dos c
 3. **Ampliación al top 10 y apalancamiento 0x–10x:** informe [`docs/top10_apalancamiento.md`](docs/top10_apalancamiento.md).
    - Sin el sesgo de elegir los ganadores de hoy, añadir altcoins a BTC y ETH empeora el resultado (×4,6 frente a ×14,7 en 2019–2026).
    - Con el límite de caída del 50 %, el apalancamiento máximo razonable es 1x (1,5x ya lo roza); a 10x todo se liquida.
-4. **Siguiente fase propuesta:** motor del bot (estrategia A, solo BTC y ETH, sin apalancamiento) y paper trading en OKX Europa.
+4. **Controles de protección para apalancar más (BTC y ETH):** informe [`docs/proteccion_apalancamiento.md`](docs/proteccion_apalancamiento.md).
+   - Stop intradía, volatilidad rápida y freno por caída reducen caídas pero no permiten ganar más apalancando; 1x sigue siendo lo mejor entre lo fijado de antemano.
+   - Única candidata: "tendencia fuerte + freno con reinicio anual" a 2x (40 % anual frente a 34 %, caída similar), elegida a posteriori y justo en el límite de riesgo.
+5. **Siguiente fase propuesta:** motor del bot (estrategia A, solo BTC y ETH, 1x) y paper trading en OKX Europa, con la candidata a 2x en paralelo solo en demo.
 
 ## Estructura
 
@@ -23,6 +26,7 @@ corrbot/            librería
   trend.py          estrategia A: tendencia con tamaño por volatilidad, backtest, test de azar, simulación de caídas
   dips.py           estrategia B: compras tras caídas extremas (órdenes límite, funding)
   leverage.py       simulador con apalancamiento: funding, liquidación y rebalanceo
+  protect.py        controles de protección: volatilidad rápida, stop intradía, freno por caída, tendencia fuerte
   plots.py          estilo de gráficos
 scripts/
   download_data.py  descarga el dataset (~200 MB en data/, ignorado por git)
@@ -35,6 +39,8 @@ scripts/
   leverage_analysis.py  apalancamiento 0x-10x en BTC/ETH, rotación y B → results/apalancamiento/
   top10_analysis.py     top 10 de hoy y de cada momento, con apalancamiento → results/top10/
   charts_top10_leverage.py  gráficos 09-11
+  protection_analysis.py    controles de protección y apalancamiento máximo aceptable → results/proteccion/
+  charts_protection.py      gráficos 12-13
 tests/              tests del backtester (incluye comprobación de "no mirar al futuro")
 results/            resultados en CSV (los números del informe)
 docs/               informe y gráficos

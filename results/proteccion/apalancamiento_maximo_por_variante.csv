@@ -1,9 +1,11 @@
-variante,apalanc_max_aceptable,CAGR_hist,caida_hist,examen,examen_caida,P(caída>50%),mediana_3a
-Sin protección,1.0000,0.3373,-0.3391,0.2569,-0.2120,0.0075,2.3717
-Volatilidad rápida,1.0000,0.2983,-0.3230,0.2026,-0.2022,0.0025,2.1951
-Stop intradía (3σ),1.0000,0.2554,-0.3583,0.2025,-0.2215,0.0175,1.9584
-Freno por caída (suelo −40 %),6.0000,0.0573,-0.4212,-0.2012,-0.4008,0.0100,1.0076
-Freno con reinicio anual,1.5000,0.3224,-0.3275,0.2026,-0.2581,0.0250,2.1580
-Apalancar solo con tendencia fuerte,1.0000,0.3373,-0.3391,0.2569,-0.2120,0.0075,2.3717
-Todo junto (freno permanente),6.0000,0.1624,-0.4008,-0.2098,-0.3933,0.0000,0.9024
-Todo junto (freno con reinicio anual),1.5000,0.2228,-0.3040,0.1710,-0.2270,0.0175,1.6829
+variante,apalanc_max_aceptable,apalanc_mejor_aceptable,CAGR_hist,caida_hist,examen,examen_caida,P(caída>50%),mediana_3a
+Sin protección,1.0000,1.0000,0.3373,-0.3391,0.2569,-0.2120,0.0075,2.3717
+Volatilidad rápida,1.0000,1.0000,0.2983,-0.3230,0.2026,-0.2022,0.0025,2.1951
+Stop intradía (3σ),1.0000,1.0000,0.2554,-0.3583,0.2025,-0.2215,0.0175,1.9584
+Freno por caída (suelo −40 %),6.0000,1.0000,0.2720,-0.2651,0.1823,-0.1863,0.0000,2.0717
+Freno con reinicio anual,1.5000,1.5000,0.3224,-0.3275,0.2026,-0.2581,0.0250,2.1580
+Apalancar solo con tendencia fuerte,1.0000,1.0000,0.3373,-0.3391,0.2569,-0.2120,0.0075,2.3717
+Todo junto (freno permanente),6.0000,1.0000,0.1847,-0.2682,0.1299,-0.1893,0.0000,1.6507
+Todo junto (freno con reinicio anual),1.5000,1.5000,0.2228,-0.3040,0.1710,-0.2270,0.0175,1.6829
+Tendencia fuerte + freno con reinicio (a posteriori),2.0000,2.0000,0.3973,-0.3529,0.2908,-0.2622,0.0500,2.5044
+Tendencia fuerte + freno permanente (a posteriori),6.0000,2.0000,0.2763,-0.3390,0.2241,-0.2620,0.0025,2.2390
