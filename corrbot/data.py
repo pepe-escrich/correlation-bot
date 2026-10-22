@@ -249,3 +249,32 @@ def download_klines_listed(symbol: str, interval: str = "1d", workers: int = 8) 
     path.parent.mkdir(parents=True, exist_ok=True)
     df.to_parquet(path)
     return df
+
+
+# ------------------------------------------------------------------ Hyperliquid
+HYPERLIQUID_URL = "https://api.hyperliquid.xyz/info"
+
+
+def download_hyperliquid_daily(pair: str = "@107", name: str = "HYPEUSDC_HL",
+                               start: str = "2024-11-01") -> pd.DataFrame:
+    """Velas diarias (UTC) de un par spot de Hyperliquid, p. ej. "@107" = HYPE/USDC.
+
+    API pública sin clave. Se descarta la vela del día en curso (incompleta) y se guarda en
+    data/klines/1d/<name>.parquet con el mismo formato que las de Binance."""
+    t0 = int(pd.Timestamp(start, tz="UTC").timestamp() * 1000)
+    t1 = int(datetime.now(timezone.utc).timestamp() * 1000)
+    r = _session().post(HYPERLIQUID_URL, json={"type": "candleSnapshot",
+                                               "req": {"coin": pair, "interval": "1d", "startTime": t0,
+                                                       "endTime": t1}}, timeout=60)
+    r.raise_for_status()
+    raw = pd.DataFrame(r.json())
+    df = pd.DataFrame({"open": raw["o"].astype(float), "high": raw["h"].astype(float),
+                       "low": raw["l"].astype(float), "close": raw["c"].astype(float),
+                       "volume": raw["v"].astype(float)})
+    df.index = pd.DatetimeIndex(pd.to_datetime(raw["t"].astype("int64"), unit="ms", utc=True), name="open_time")
+    complete = raw["T"].astype("int64").to_numpy() < t1          # la vela ya ha cerrado
+    df = df[complete]
+    path = cache_path(name, "1d")
+    path.parent.mkdir(parents=True, exist_ok=True)
+    df.to_parquet(path)
+    return df

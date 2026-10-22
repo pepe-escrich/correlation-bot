@@ -22,13 +22,14 @@ Investigación y desarrollo de un bot de trading que rota el capital entre dos c
    - Seguir cada operación minuto a minuto en lugar de cada 5 minutos no cambia el resultado (diferencia mediana del 0,01 % por operación).
    - Con señales de 1 y 5 minutos pierden las 96 configuraciones: los costes llegan a ser 2,5 veces lo que arriesga el stop y el breakeven ni siquiera se puede colocar en la mayoría de operaciones.
 7. **¿Revisar la estrategia A cada hora o cada minuto?** No: empeora. Una vez al día da 32 % al año; cada hora, 29 %; cada minuto, −15 % (2.670 órdenes al año). Informe: [`docs/frecuencia_chequeo.md`](docs/frecuencia_chequeo.md).
-8. **Siguiente fase propuesta:** motor del bot (estrategia A, solo BTC y ETH, 1x) y paper trading en OKX Europa, con la candidata a 2x en paralelo solo en demo.
+8. **Estrategia A con HYPE en 2026 (ilustración):** 1.000 $ → 1.424 $ (+42 %, caída −13 %) frente a 3.166 $ manteniendo (+217 %, caída −30 %). Por su volatilidad, la regla invierte como mucho la mitad. Antes, del máximo de septiembre de 2025 a enero de 2026, HYPE cayó un 64 %. Informe: [`docs/hype_2026.md`](docs/hype_2026.md).
+9. **Siguiente fase propuesta:** motor del bot (estrategia A, solo BTC y ETH, 1x) y paper trading en OKX Europa, con la candidata a 2x en paralelo solo en demo.
 
 ## Estructura
 
 ```
 corrbot/            librería
-  data.py           descarga y caché de velas de Binance (data.binance.vision, sin API key)
+  data.py           descarga y caché de velas de Binance (data.binance.vision) y de Hyperliquid, sin API key
   stats.py          beta, beta asimétrica, ratio de varianzas, zigzag (tramos), cointegración
   backtest.py       backtester de rotación 0/1 y de rebalanceo, métricas, test de azar, walk-forward
   trend.py          estrategia A: tendencia con tamaño por volatilidad, backtest, test de azar, simulación de caídas
@@ -54,6 +55,7 @@ scripts/
                             con --velas 1m y --temporalidades, la ampliación a 1 minuto → results/intradia_1min/
   breakeven_check.py        cuántas operaciones tienen un breakeven que no se puede colocar
   check_frequency.py        estrategia A revisada cada día, hora o minuto → results/frecuencia/
+  hype_2026.py              estrategia A con HYPE en 2026 (datos de Hyperliquid) → results/hype_2026/, gráfico 21
   charts_intraday.py        gráficos 14-17
   charts_intraday_1min.py   gráficos 18-20
 tests/              tests del backtester (incluye comprobación de "no mirar al futuro")
