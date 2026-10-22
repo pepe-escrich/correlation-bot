@@ -192,3 +192,60 @@ def download_funding(symbol: str, start: str = "2019-09-01", workers: int = 16) 
     path.parent.mkdir(parents=True, exist_ok=True)
     series.to_frame("rate").to_parquet(path)
     return series
+
+
+# --------------------------------------------------------- listado completo (S3)
+S3_LIST_URL = "https://s3-ap-northeast-1.amazonaws.com/data.binance.vision"
+
+
+def list_s3(prefix: str, folders: bool = False) -> list[str]:
+    """Lista claves (o subcarpetas) bajo `prefix` en el bucket público de Binance."""
+    import re
+
+    out, marker = [], ""
+    pattern = r"<Prefix>([^<]+)</Prefix>" if folders else r"<Key>([^<]+)</Key>"
+    while True:
+        params = {"prefix": prefix, "marker": marker}
+        if folders:
+            params["delimiter"] = "/"
+        for attempt in range(6):
+            try:
+                text = _session().get(S3_LIST_URL, params=params, timeout=60).text
+                break
+            except requests.RequestException:
+                if attempt == 5:
+                    raise
+                time.sleep(2 ** attempt)
+        found = [k for k in re.findall(pattern, text) if k != prefix]
+        out += found
+        nxt = re.search(r"<NextMarker>([^<]+)</NextMarker>", text)
+        if "<IsTruncated>true</IsTruncated>" not in text:
+            break
+        marker = nxt.group(1) if nxt else found[-1]
+    return out
+
+
+def download_klines_listed(symbol: str, interval: str = "1d", workers: int = 8) -> pd.DataFrame | None:
+    """Descarga todos los ficheros mensuales que existen para el símbolo (incluidos los
+    deslistados), más los diarios del mes en curso si sigue cotizando."""
+    path = cache_path(symbol, interval)
+    keys = [k for k in list_s3(f"data/spot/monthly/klines/{symbol}/{interval}/") if k.endswith(".zip")]
+    if not keys:
+        return None
+    urls = [f"https://data.binance.vision/{k}" for k in keys]
+    today = datetime.now(timezone.utc).date()
+    last_month = date(today.year, today.month, 1) - timedelta(days=1)
+    if any(f"{last_month:%Y-%m}.zip" in k for k in keys):
+        day = date(today.year, today.month, 1)
+        while day < today:
+            urls.append(f"{BASE_URL}/daily/klines/{symbol}/{interval}/{symbol}-{interval}-{day:%Y-%m-%d}.zip")
+            day += timedelta(days=1)
+    with ThreadPoolExecutor(max_workers=workers) as pool:
+        frames = [f for f in pool.map(_fetch_zip_csv, urls) if f is not None and len(f)]
+    if not frames:
+        return None
+    df = pd.concat([_clean(f) for f in frames]).sort_index()
+    df = df[~df.index.duplicated(keep="last")]
+    path.parent.mkdir(parents=True, exist_ok=True)
+    df.to_parquet(path)
+    return df
