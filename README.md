@@ -21,7 +21,8 @@ Investigación y desarrollo de un bot de trading que rota el capital entre dos c
 6. **Ampliación con velas de 1 minuto: confirma el descarte.** Informe: [`docs/intradia_1min.md`](docs/intradia_1min.md).
    - Seguir cada operación minuto a minuto en lugar de cada 5 minutos no cambia el resultado (diferencia mediana del 0,01 % por operación).
    - Con señales de 1 y 5 minutos pierden las 96 configuraciones: los costes llegan a ser 2,5 veces lo que arriesga el stop y el breakeven ni siquiera se puede colocar en la mayoría de operaciones.
-7. **Siguiente fase propuesta:** motor del bot (estrategia A, solo BTC y ETH, 1x) y paper trading en OKX Europa, con la candidata a 2x en paralelo solo en demo.
+7. **¿Revisar la estrategia A cada hora o cada minuto?** No: empeora. Una vez al día da 32 % al año; cada hora, 29 %; cada minuto, −15 % (2.670 órdenes al año). Informe: [`docs/frecuencia_chequeo.md`](docs/frecuencia_chequeo.md).
+8. **Siguiente fase propuesta:** motor del bot (estrategia A, solo BTC y ETH, 1x) y paper trading en OKX Europa, con la candidata a 2x en paralelo solo en demo.
 
 ## Estructura
 
@@ -52,6 +53,7 @@ scripts/
   intraday_analysis.py      estrategia intradía 10x con stop escalonado (protocolo pre-registrado) → results/intradia/
                             con --velas 1m y --temporalidades, la ampliación a 1 minuto → results/intradia_1min/
   breakeven_check.py        cuántas operaciones tienen un breakeven que no se puede colocar
+  check_frequency.py        estrategia A revisada cada día, hora o minuto → results/frecuencia/
   charts_intraday.py        gráficos 14-17
   charts_intraday_1min.py   gráficos 18-20
 tests/              tests del backtester (incluye comprobación de "no mirar al futuro")
