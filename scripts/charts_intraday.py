@@ -13,9 +13,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 from corrbot import plots  # noqa: E402
 
 RES = Path(__file__).resolve().parent.parent / "results" / "intradia"
-ROWS = [("15m", "ruptura"), ("15m", "retroceso"), ("15m", "al azar"),
-        ("1h", "ruptura"), ("1h", "retroceso"), ("1h", "al azar")]
-TF_LABEL = {"15m": "15 min", "1h": "1 hora"}
+TF_LABEL = {"1m": "1 min", "5m": "5 min", "15m": "15 min", "1h": "1 hora"}
 ENTRY_COLOR = {"ruptura": plots.SERIES[0], "retroceso": plots.SERIES[1]}
 REASON_ORDER = ["stop", "breakeven", "stop que persigue", "objetivo", "tiempo"]
 REASON_LABEL = {"stop": "stop inicial", "breakeven": "breakeven", "stop que persigue": "stop que persigue",
@@ -41,17 +39,23 @@ def _pct_axis(ax, decimals: int = 2) -> None:
         lambda v, _: "0" if abs(v) < 1e-12 else plots.num(v * 100, decimals, sign=True).replace("-", "−") + " %"))
 
 
-def chart_entries_vs_random() -> None:
-    """14: cada configuración frente a las entradas al azar, antes y después de costes."""
+def chart_entries_vs_random(res: Path = RES, tfs: tuple[str, ...] = ("15m", "1h"),
+                            name: str = "14_intradia_entradas_vs_azar.png",
+                            title: str = "Ninguna entrada se distingue del azar, y los costes las dejan todas en negativo",
+                            subtitle: str = "Desarrollo 2018–2023, BTC+ETH. Cada punto de color es una de las 96 "
+                                            "configuraciones; los grises, entradas al azar con las mismas gestiones "
+                                            "(20 semillas)", tick_step: float | None = None) -> None:
+    """14 (y 19): cada configuración frente a las entradas al azar, antes y después de costes."""
     import matplotlib.pyplot as plt
 
-    grid = pd.read_csv(RES / "desarrollo_rejilla.csv")
-    rand = pd.read_csv(RES / "azar_desarrollo.csv")
-    sel = json.loads((RES / "veredicto.json").read_text())["seleccionada"]
+    grid = pd.read_csv(res / "desarrollo_rejilla.csv")
+    rand = pd.read_csv(res / "azar_desarrollo.csv")
+    sel = json.loads((res / "veredicto.json").read_text())["seleccionada"]
     rng = np.random.default_rng(0)
     fig, axes = plt.subplots(1, 2, figsize=(12, 5.6), sharey=True, sharex=True)
-    ypos = {row: len(ROWS) - 1 - i for i, row in enumerate(ROWS)}
-    for ax, col, title in [(axes[0], "media_bruta", "Antes de costes"), (axes[1], "media_neta", "Después de costes")]:
+    rows = [(tf, e) for tf in tfs for e in ("ruptura", "retroceso", "al azar")]
+    ypos = {row: len(rows) - 1 - i for i, row in enumerate(rows)}
+    for ax, col, panel in [(axes[0], "media_bruta", "Antes de costes"), (axes[1], "media_neta", "Después de costes")]:
         for (tf, entry), y in ypos.items():
             if entry == "al azar":
                 v = rand.loc[rand["temporalidad"] == tf, col].to_numpy()
@@ -66,24 +70,25 @@ def chart_entries_vs_random() -> None:
                     ax.scatter(hit[col], [y] * len(hit), s=120, facecolors="none", edgecolors=plots.INK,
                                linewidths=1.4, zorder=4)
         ax.axvline(0, color=plots.INK_2, linewidth=1, zorder=1)
-        ax.set_title(title, fontsize=11.5, pad=8)
+        ax.set_title(panel, fontsize=11.5, pad=8)
         ax.grid(axis="y", visible=False)
+        if tick_step:
+            from matplotlib.ticker import MultipleLocator
+
+            ax.xaxis.set_major_locator(MultipleLocator(tick_step))
         _pct_axis(ax)
         ax.set_xlabel("rentabilidad media por operación (sin apalancar)")
     axes[0].set_yticks(list(ypos.values()), [f"{TF_LABEL[tf]} · {e}" for tf, e in ypos])
-    axes[0].set_ylim(-0.6, len(ROWS) - 0.4)
+    axes[0].set_ylim(-0.6, len(rows) - 0.4)
     x_sel = grid.loc[grid["config"] == sel, "media_neta"].iloc[0]
     y_sel = ypos[(grid.loc[grid["config"] == sel, "temporalidad"].iloc[0],
                   grid.loc[grid["config"] == sel, "entrada"].iloc[0])]
     axes[1].annotate("la elegida\n(la mejor de 96)", (x_sel, y_sel), xytext=(12, 16), textcoords="offset points",
                      fontsize=8.8, color=plots.INK_2, arrowprops=dict(arrowstyle="-", color=plots.INK_2, lw=0.8))
-    fig.suptitle("Ninguna entrada se distingue del azar, y los costes las dejan todas en negativo",
-                 x=0.015, ha="left", fontsize=13, fontweight="bold", color=plots.INK)
-    fig.text(0.015, 0.905, "Desarrollo 2018–2023, BTC+ETH. Cada punto de color es una de las 96 configuraciones; "
-             "los grises, entradas al azar con las mismas gestiones (20 semillas)",
-             color=plots.INK_2, fontsize=9.5)
+    fig.suptitle(title, x=0.015, ha="left", fontsize=13, fontweight="bold", color=plots.INK)
+    fig.text(0.015, 0.905, subtitle, color=plots.INK_2, fontsize=9.5)
     fig.subplots_adjust(top=0.82, wspace=0.06, left=0.15, right=0.98, bottom=0.12)
-    plots.save(fig, "14_intradia_entradas_vs_azar.png")
+    plots.save(fig, name)
 
 
 def chart_costs() -> None:

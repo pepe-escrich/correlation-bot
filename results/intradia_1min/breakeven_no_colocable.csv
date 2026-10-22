@@ -1,0 +1,73 @@
+config,temporalidad,entrada,k,breakeven,salida,operaciones,% breakeven no colocable,% cerradas por breakeven no colocable,% salidas en breakeven
+"1m · ruptura · stop 1 ATR · breakeven a 0,5R · objetivo 3R",1m,ruptura,1.0,"breakeven a 0,5R",objetivo 3R,208034,0.9499456819558342,0.5272695809338858,0.5535681667419748
+"1m · ruptura · stop 1 ATR · breakeven a 0,5R · stop que persigue",1m,ruptura,1.0,"breakeven a 0,5R",stop que persigue,198799,0.952655697463267,0.5478900799299795,0.5704656462054638
+1m · ruptura · stop 1 ATR · breakeven a 1R · objetivo 3R,1m,ruptura,1.0,breakeven a 1R,objetivo 3R,188504,0.7414378474727327,0.31442834104316086,0.41270742265416116
+1m · ruptura · stop 1 ATR · breakeven a 1R · stop que persigue,1m,ruptura,1.0,breakeven a 1R,stop que persigue,177132,0.7522017478490617,0.3440936702572093,0.428674660705011
+1m · ruptura · stop 1 ATR · breakeven a 2R · objetivo 3R,1m,ruptura,1.0,breakeven a 2R,objetivo 3R,167688,0.35899408425170554,0.08370306760173656,0.18930990887839322
+1m · ruptura · stop 1 ATR · breakeven a 2R · stop que persigue,1m,ruptura,1.0,breakeven a 2R,stop que persigue,148494,0.3717389254784705,0.12694789015044378,0.2218540816463965
+"1m · ruptura · stop 2 ATR · breakeven a 0,5R · objetivo 3R",1m,ruptura,2.0,"breakeven a 0,5R",objetivo 3R,156356,0.7596254700810969,0.47493540382204713,0.6204558827291565
+"1m · ruptura · stop 2 ATR · breakeven a 0,5R · stop que persigue",1m,ruptura,2.0,"breakeven a 0,5R",stop que persigue,153172,0.7671767686000053,0.4783968349306662,0.6061617005719061
+1m · ruptura · stop 2 ATR · breakeven a 1R · objetivo 3R,1m,ruptura,2.0,breakeven a 1R,objetivo 3R,120932,0.3842655376575265,0.1810190851056792,0.42938180134290344
+1m · ruptura · stop 2 ATR · breakeven a 1R · stop que persigue,1m,ruptura,2.0,breakeven a 1R,stop que persigue,116407,0.3942546410439235,0.19083903888941386,0.38634274571116856
+1m · ruptura · stop 2 ATR · breakeven a 2R · objetivo 3R,1m,ruptura,2.0,breakeven a 2R,objetivo 3R,96277,0.1368862760576254,0.03718437425345617,0.16702846993570636
+1m · ruptura · stop 2 ATR · breakeven a 2R · stop que persigue,1m,ruptura,2.0,breakeven a 2R,stop que persigue,87686,0.1428164131104167,0.050977351002440524,0.12771708140410098
+"1m · ruptura · stop 3 ATR · breakeven a 0,5R · objetivo 3R",1m,ruptura,3.0,"breakeven a 0,5R",objetivo 3R,116358,0.5593685006617508,0.35357259492256654,0.6216160470272779
+"1m · ruptura · stop 3 ATR · breakeven a 0,5R · stop que persigue",1m,ruptura,3.0,"breakeven a 0,5R",stop que persigue,116932,0.5632333321930695,0.3538808880374919,0.5921988848219478
+1m · ruptura · stop 3 ATR · breakeven a 1R · objetivo 3R,1m,ruptura,3.0,breakeven a 1R,objetivo 3R,78994,0.2307643618502671,0.11038813074410715,0.41255032027748945
+1m · ruptura · stop 3 ATR · breakeven a 1R · stop que persigue,1m,ruptura,3.0,breakeven a 1R,stop que persigue,79451,0.23357792853456846,0.11430944859095543,0.3262262274861235
+1m · ruptura · stop 3 ATR · breakeven a 2R · objetivo 3R,1m,ruptura,3.0,breakeven a 2R,objetivo 3R,56394,0.08128524311096925,0.023105294889527256,0.15271128134198675
+1m · ruptura · stop 3 ATR · breakeven a 2R · stop que persigue,1m,ruptura,3.0,breakeven a 2R,stop que persigue,55051,0.08223283864053332,0.030153857332291874,0.08880855933588853
+"1m · retroceso · stop 1 ATR · breakeven a 0,5R · objetivo 3R",1m,retroceso,1.0,"breakeven a 0,5R",objetivo 3R,611690,0.9370677957789076,0.5598522127221305,0.5960960617306151
+"1m · retroceso · stop 1 ATR · breakeven a 0,5R · stop que persigue",1m,retroceso,1.0,"breakeven a 0,5R",stop que persigue,613495,0.9360255584805092,0.5600746542351609,0.5922297655237614
+1m · retroceso · stop 1 ATR · breakeven a 1R · objetivo 3R,1m,retroceso,1.0,breakeven a 1R,objetivo 3R,513072,0.7242609224436336,0.3331228365609505,0.4479000997910625
+1m · retroceso · stop 1 ATR · breakeven a 1R · stop que persigue,1m,retroceso,1.0,breakeven a 1R,stop que persigue,515729,0.7219954666113404,0.3401049776142121,0.43644821214242363
+1m · retroceso · stop 1 ATR · breakeven a 2R · objetivo 3R,1m,retroceso,1.0,breakeven a 2R,objetivo 3R,403645,0.3609211064177681,0.092938101549629,0.2075065961426501
+1m · retroceso · stop 1 ATR · breakeven a 2R · stop que persigue,1m,retroceso,1.0,breakeven a 2R,stop que persigue,405941,0.3586974461806026,0.11719437061050744,0.20260826080637334
+"1m · retroceso · stop 2 ATR · breakeven a 0,5R · objetivo 3R",1m,retroceso,2.0,"breakeven a 0,5R",objetivo 3R,328561,0.7341924330641799,0.4637099351414197,0.6266872818137271
+"1m · retroceso · stop 2 ATR · breakeven a 0,5R · stop que persigue",1m,retroceso,2.0,"breakeven a 0,5R",stop que persigue,343634,0.7274600301483555,0.4554875245173644,0.6047655354243178
+1m · retroceso · stop 2 ATR · breakeven a 1R · objetivo 3R,1m,retroceso,2.0,breakeven a 1R,objetivo 3R,229720,0.3786479192059899,0.17674125021765627,0.4274508096813512
+1m · retroceso · stop 2 ATR · breakeven a 1R · stop que persigue,1m,retroceso,2.0,breakeven a 1R,stop que persigue,247480,0.36815096169387423,0.17267657992565055,0.3617585259414902
+1m · retroceso · stop 2 ATR · breakeven a 2R · objetivo 3R,1m,retroceso,2.0,breakeven a 2R,objetivo 3R,150264,0.14664191023798115,0.04046877495607731,0.16650694777192143
+1m · retroceso · stop 2 ATR · breakeven a 2R · stop que persigue,1m,retroceso,2.0,breakeven a 2R,stop que persigue,163268,0.1410931719626626,0.04599186613420878,0.10352916676874832
+"1m · retroceso · stop 3 ATR · breakeven a 0,5R · objetivo 3R",1m,retroceso,3.0,"breakeven a 0,5R",objetivo 3R,188300,0.5328040361125863,0.3372650026553372,0.623473181093999
+"1m · retroceso · stop 3 ATR · breakeven a 0,5R · stop que persigue",1m,retroceso,3.0,"breakeven a 0,5R",stop que persigue,207308,0.5198834584290042,0.32566519381789416,0.584637351187605
+1m · retroceso · stop 3 ATR · breakeven a 1R · objetivo 3R,1m,retroceso,3.0,breakeven a 1R,objetivo 3R,110789,0.23266750309146214,0.10853063029723167,0.4060601684282736
+1m · retroceso · stop 3 ATR · breakeven a 1R · stop que persigue,1m,retroceso,3.0,breakeven a 1R,stop que persigue,130736,0.2149293232162526,0.10035491371925101,0.2939052747521723
+1m · retroceso · stop 3 ATR · breakeven a 2R · objetivo 3R,1m,retroceso,3.0,breakeven a 2R,objetivo 3R,60898,0.08420637787776282,0.023334099642024368,0.1470655850766856
+1m · retroceso · stop 3 ATR · breakeven a 2R · stop que persigue,1m,retroceso,3.0,breakeven a 2R,stop que persigue,70945,0.08042850095144126,0.025738247938543943,0.06643174289942913
+"5m · ruptura · stop 1 ATR · breakeven a 0,5R · objetivo 3R",5m,ruptura,1.0,"breakeven a 0,5R",objetivo 3R,43082,0.6277563715704935,0.37653776519195953,0.5929390464695232
+"5m · ruptura · stop 1 ATR · breakeven a 0,5R · stop que persigue",5m,ruptura,1.0,"breakeven a 0,5R",stop que persigue,42587,0.6315307488200624,0.3736821095639514,0.5653368398807148
+5m · ruptura · stop 1 ATR · breakeven a 1R · objetivo 3R,5m,ruptura,1.0,breakeven a 1R,objetivo 3R,36062,0.23492873384726304,0.10027175420109811,0.3925739005046864
+5m · ruptura · stop 1 ATR · breakeven a 1R · stop que persigue,5m,ruptura,1.0,breakeven a 1R,stop que persigue,35058,0.24025899937246847,0.10422728050658908,0.32888356437902905
+5m · ruptura · stop 1 ATR · breakeven a 2R · objetivo 3R,5m,ruptura,1.0,breakeven a 2R,objetivo 3R,30714,0.05033535195676239,0.011200104187015694,0.14162922445790194
+5m · ruptura · stop 1 ATR · breakeven a 2R · stop que persigue,5m,ruptura,1.0,breakeven a 2R,stop que persigue,28645,0.053447373014487695,0.015220806423459592,0.09174375981846744
+"5m · ruptura · stop 2 ATR · breakeven a 0,5R · objetivo 3R",5m,ruptura,2.0,"breakeven a 0,5R",objetivo 3R,29555,0.25998984943326003,0.15905938081542886,0.600981221451531
+"5m · ruptura · stop 2 ATR · breakeven a 0,5R · stop que persigue",5m,ruptura,2.0,"breakeven a 0,5R",stop que persigue,29275,0.26343296327924853,0.15866780529462,0.5402220324508966
+5m · ruptura · stop 2 ATR · breakeven a 1R · objetivo 3R,5m,ruptura,2.0,breakeven a 1R,objetivo 3R,21312,0.06085773273273273,0.027730855855855857,0.37659534534534533
+5m · ruptura · stop 2 ATR · breakeven a 1R · stop que persigue,5m,ruptura,2.0,breakeven a 1R,stop que persigue,20970,0.06213638531235098,0.028183118741058655,0.2328564616118264
+5m · ruptura · stop 2 ATR · breakeven a 2R · objetivo 3R,5m,ruptura,2.0,breakeven a 2R,objetivo 3R,17674,0.011485798347855607,0.0035645581079551884,0.12928595677266042
+5m · ruptura · stop 2 ATR · breakeven a 2R · stop que persigue,5m,ruptura,2.0,breakeven a 2R,stop que persigue,16820,0.012187871581450654,0.004042806183115339,0.04910820451843044
+"5m · ruptura · stop 3 ATR · breakeven a 0,5R · objetivo 3R",5m,ruptura,3.0,"breakeven a 0,5R",objetivo 3R,19921,0.12273480246975553,0.07579940766025801,0.5942974750263541
+"5m · ruptura · stop 3 ATR · breakeven a 0,5R · stop que persigue",5m,ruptura,3.0,"breakeven a 0,5R",stop que persigue,20271,0.12372354595234572,0.07518129347343495,0.5026392383207537
+5m · ruptura · stop 3 ATR · breakeven a 1R · objetivo 3R,5m,ruptura,3.0,breakeven a 1R,objetivo 3R,13740,0.023944687045123727,0.011353711790393014,0.36499272197962157
+5m · ruptura · stop 3 ATR · breakeven a 1R · stop que persigue,5m,ruptura,3.0,breakeven a 1R,stop que persigue,14268,0.023549201009251473,0.011143818334735071,0.17767031118587048
+5m · ruptura · stop 3 ATR · breakeven a 2R · objetivo 3R,5m,ruptura,3.0,breakeven a 2R,objetivo 3R,10931,0.003933766352575245,0.0009148293843198244,0.11572591711645779
+5m · ruptura · stop 3 ATR · breakeven a 2R · stop que persigue,5m,ruptura,3.0,breakeven a 2R,stop que persigue,10965,0.003739170086639307,0.0010031919744642043,0.03337893296853625
+"5m · retroceso · stop 1 ATR · breakeven a 0,5R · objetivo 3R",5m,retroceso,1.0,"breakeven a 0,5R",objetivo 3R,121438,0.5893624730315058,0.3865346926003393,0.6422124870304188
+"5m · retroceso · stop 1 ATR · breakeven a 0,5R · stop que persigue",5m,retroceso,1.0,"breakeven a 0,5R",stop que persigue,123513,0.5849424756908179,0.3790532170702679,0.6093285727008493
+5m · retroceso · stop 1 ATR · breakeven a 1R · objetivo 3R,5m,retroceso,1.0,breakeven a 1R,objetivo 3R,89120,0.22448384201077198,0.11128815080789946,0.4281306104129264
+5m · retroceso · stop 1 ATR · breakeven a 1R · stop que persigue,5m,retroceso,1.0,breakeven a 1R,stop que persigue,91590,0.22084288677803254,0.10874549623321324,0.3356479965061688
+5m · retroceso · stop 1 ATR · breakeven a 2R · objetivo 3R,5m,retroceso,1.0,breakeven a 2R,objetivo 3R,67465,0.05444304454161417,0.017149633143111243,0.1572370858963907
+5m · retroceso · stop 1 ATR · breakeven a 2R · stop que persigue,5m,retroceso,1.0,breakeven a 2R,stop que persigue,69311,0.05358456810607263,0.018265498982845435,0.07291771868823131
+"5m · retroceso · stop 2 ATR · breakeven a 0,5R · objetivo 3R",5m,retroceso,2.0,"breakeven a 0,5R",objetivo 3R,55160,0.22690355329949238,0.14960116026105874,0.6209028281363307
+"5m · retroceso · stop 2 ATR · breakeven a 0,5R · stop que persigue",5m,retroceso,2.0,"breakeven a 0,5R",stop que persigue,60380,0.22338522689632329,0.14566081483935078,0.5552500828088771
+5m · retroceso · stop 2 ATR · breakeven a 1R · objetivo 3R,5m,retroceso,2.0,breakeven a 1R,objetivo 3R,35559,0.054135380635000986,0.026125594083073203,0.3738856548271886
+5m · retroceso · stop 2 ATR · breakeven a 1R · stop que persigue,5m,retroceso,2.0,breakeven a 1R,stop que persigue,41102,0.05240620894360372,0.02498661865602647,0.20994112208651647
+5m · retroceso · stop 2 ATR · breakeven a 2R · objetivo 3R,5m,retroceso,2.0,breakeven a 2R,objetivo 3R,23789,0.010382950102988776,0.003236790113077473,0.11753331371642356
+5m · retroceso · stop 2 ATR · breakeven a 2R · stop que persigue,5m,retroceso,2.0,breakeven a 2R,stop que persigue,26911,0.010590464865668314,0.0035673144810672215,0.030396492140760283
+"5m · retroceso · stop 3 ATR · breakeven a 0,5R · objetivo 3R",5m,retroceso,3.0,"breakeven a 0,5R",objetivo 3R,29709,0.10437914436702683,0.06940657713150897,0.5973274092025985
+"5m · retroceso · stop 3 ATR · breakeven a 0,5R · stop que persigue",5m,retroceso,3.0,"breakeven a 0,5R",stop que persigue,34404,0.09833158935007558,0.06432391582374143,0.5018021160330194
+5m · retroceso · stop 3 ATR · breakeven a 1R · objetivo 3R,5m,retroceso,3.0,breakeven a 1R,objetivo 3R,17489,0.020470009720395678,0.010578077648807822,0.33792669678083365
+5m · retroceso · stop 3 ATR · breakeven a 1R · stop que persigue,5m,retroceso,3.0,breakeven a 1R,stop que persigue,21521,0.018354165698619952,0.009246782212722458,0.14135030900051113
+5m · retroceso · stop 3 ATR · breakeven a 2R · objetivo 3R,5m,retroceso,3.0,breakeven a 2R,objetivo 3R,12209,0.00442296666393644,0.0011466950610205587,0.0995986567286428
+5m · retroceso · stop 3 ATR · breakeven a 2R · stop que persigue,5m,retroceso,3.0,breakeven a 2R,stop que persigue,13626,0.003963011889035667,0.0011742257448994569,0.022603845589314546

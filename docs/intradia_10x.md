@@ -75,6 +75,8 @@ En desarrollo, entre las 96 configuraciones con al menos 150 operaciones (BTC+ET
 
 *22 de octubre de 2026 · Protocolo ejecutado una sola vez, tal como está escrito arriba.*
 
+> **Ampliación con velas de 1 minuto:** [`intradia_1min.md`](intradia_1min.md). Seguir cada operación minuto a minuto da el mismo resultado, y operar con señales de 1 o 5 minutos es todavía peor.
+
 ### Veredicto: no aprueba (0 de 5 criterios)
 
 - **Ninguna de las 96 configuraciones tiene ventaja.** Antes de costes ganan de media +0,01 % por operación, es decir, nada. Entrar al azar con el mismo filtro de tendencia rinde igual o mejor.
@@ -227,6 +229,7 @@ Solo el segundo semestre de 2018 fue claramente bueno. Incluso ese año, a 10x l
 - **Comisiones:** son las de nivel básico. Con órdenes límite o nivel VIP serían menores, pero no basta, porque antes de costes no hay ventaja.
 - **Velas ambiguas:** la regla "el stop primero" apenas influye. Solo 6 de 9.419 operaciones tuvieron una vela que tocó a la vez el stop y el objetivo (15 minutos, stop a 1 ATR); en velas de 1 hora, ninguna.
 - **Caída medida al cerrar operaciones:** no incluye las pérdidas latentes de una operación abierta, así que la caída real sería algo mayor.
+- **Breakeven que no se puede colocar:** si el precio de activación está más cerca de la entrada que los costes (0,14 %), el stop "entrada + costes" quedaría por encima del precio. Con la regla escrita, la operación se cierra en la vela siguiente. Pasó en el 14 % de las operaciones de "15 min · stop 1 ATR · breakeven 0,5R" y en menos del 3 % del resto. No cambia la conclusión: esas configuraciones perdían de todos modos y la elegida no usa breakeven. Detalle en [`intradia_1min.md`](intradia_1min.md).
 
 ### Reproducir
 

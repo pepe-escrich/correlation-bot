@@ -18,7 +18,10 @@ Investigación y desarrollo de un bot de trading que rota el capital entre dos c
    - Protocolo pre-registrado con 96 configuraciones (15 min y 1 h) y entradas al azar como control: suspende los 5 criterios.
    - Sin ventaja antes de costes; los costes se comen hasta el 39 % del riesgo de cada operación en velas de 15 min. El breakeven no mejora la rentabilidad.
    - A 10x la cuenta pierde el 90 % en 11 meses; en el examen 2024–2026 pierden las 96 configuraciones.
-6. **Siguiente fase propuesta:** motor del bot (estrategia A, solo BTC y ETH, 1x) y paper trading en OKX Europa, con la candidata a 2x en paralelo solo en demo.
+6. **Ampliación con velas de 1 minuto: confirma el descarte.** Informe: [`docs/intradia_1min.md`](docs/intradia_1min.md).
+   - Seguir cada operación minuto a minuto en lugar de cada 5 minutos no cambia el resultado (diferencia mediana del 0,01 % por operación).
+   - Con señales de 1 y 5 minutos pierden las 96 configuraciones: los costes llegan a ser 2,5 veces lo que arriesga el stop y el breakeven ni siquiera se puede colocar en la mayoría de operaciones.
+7. **Siguiente fase propuesta:** motor del bot (estrategia A, solo BTC y ETH, 1x) y paper trading en OKX Europa, con la candidata a 2x en paralelo solo en demo.
 
 ## Estructura
 
@@ -47,7 +50,10 @@ scripts/
   protection_analysis.py    controles de protección y apalancamiento máximo aceptable → results/proteccion/
   charts_protection.py      gráficos 12-13
   intraday_analysis.py      estrategia intradía 10x con stop escalonado (protocolo pre-registrado) → results/intradia/
+                            con --velas 1m y --temporalidades, la ampliación a 1 minuto → results/intradia_1min/
+  breakeven_check.py        cuántas operaciones tienen un breakeven que no se puede colocar
   charts_intraday.py        gráficos 14-17
+  charts_intraday_1min.py   gráficos 18-20
 tests/              tests del backtester (incluye comprobación de "no mirar al futuro")
 results/            resultados en CSV (los números del informe)
 docs/               informe y gráficos
