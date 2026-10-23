@@ -25,7 +25,8 @@ Investigación y desarrollo de un bot de trading que rota el capital entre dos c
 8. **Estrategia A con HYPE (ilustración):** informe [`docs/hype_2026.md`](docs/hype_2026.md).
    - En 2026: 1.000 $ → 1.424 $ (+42 %, caída −13 %) frente a 3.166 $ manteniendo (+217 %, caída −30 %). Por su volatilidad, la regla invierte como mucho la mitad.
    - Desde su lanzamiento (nov 2024): estrategia 1.303 $ (caída −23 %); mantener 12.879 $, pero con caídas del −68 % y del −64 %.
-9. **Siguiente fase propuesta:** motor del bot (estrategia A, solo BTC y ETH, 1x) y paper trading en OKX Europa, con la candidata a 2x en paralelo solo en demo.
+9. **Datos para alta o semi-alta frecuencia y qué consultan los agentes de IA:** catálogo de fuentes comprobadas (gratuitas y de pago) y plan de grabación. Informe: [`docs/datos_alta_frecuencia.md`](docs/datos_alta_frecuencia.md).
+10. **Siguiente fase propuesta:** motor del bot (estrategia A, solo BTC y ETH, 1x) y paper trading en OKX Europa, con la candidata a 2x en paralelo solo en demo.
 
 ## Estructura
 
